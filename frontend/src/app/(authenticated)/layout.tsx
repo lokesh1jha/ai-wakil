@@ -7,9 +7,7 @@ export default function AuthenticatedLayout({
 }) {
   return (
     <div className="min-h-screen bg-background">
-      <main className="pb-24">
-        {children}
-      </main>
+      {children}
       <FloatingDockDemo />
     </div>
   )

@@ -1,68 +1,65 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { IconDashboard, IconUpload, IconMessage, IconSettings } from "@tabler/icons-react"
-import Link from "next/link"
+import React from "react"
+import { FloatingDock } from "@/components/ui/floating-dock"
+import {
+  IconHome,
+  IconUpload,
+  IconMessage,
+  IconSettings,
+} from "@tabler/icons-react"
 import { usePathname } from "next/navigation"
+import Link from "next/link"
 
 export default function FloatingDockDemo() {
   const pathname = usePathname()
 
-  const items = [
+  const links = [
     {
-      name: "Dashboard",
-      icon: IconDashboard,
+      title: "Dashboard",
+      icon: (
+        <IconHome className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+      ),
       href: "/dashboard",
     },
     {
-      name: "Upload",
-      icon: IconUpload,
+      title: "Upload",
+      icon: (
+        <IconUpload className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+      ),
       href: "/upload",
     },
     {
-      name: "Chat",
-      icon: IconMessage,
+      title: "Chat",
+      icon: (
+        <IconMessage className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+      ),
       href: "/chat",
     },
     {
-      name: "Settings",
-      icon: IconSettings,
+      title: "Settings",
+      icon: (
+        <IconSettings className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+      ),
       href: "/settings",
     },
   ]
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2">
-      <motion.div
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="flex items-center gap-2 rounded-full bg-background/80 p-2 shadow-lg backdrop-blur-lg"
-      >
-        {items.map((item) => {
-          const isActive = pathname === item.href
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`relative rounded-full p-3 transition-colors ${
-                isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted"
-              }`}
-            >
-              <item.icon className="h-6 w-6" />
-              {isActive && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute inset-0 rounded-full bg-primary"
-                  style={{ zIndex: -1 }}
-                />
-              )}
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+      <FloatingDock
+        items={links.map(link => ({
+          ...link,
+          href: link.href,
+          icon: (
+            <Link href={link.href}>
+              <div className={`h-full w-full ${pathname === link.href ? 'text-primary' : ''}`}>
+                {link.icon}
+              </div>
             </Link>
           )
-        })}
-      </motion.div>
+        }))}
+      />
     </div>
   )
 } 
