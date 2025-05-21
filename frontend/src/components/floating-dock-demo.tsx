@@ -1,71 +1,68 @@
-import React from "react";
-import { FloatingDock } from "@/components/ui/floating-dock";
-import {
-  IconBrandGithub,
-  IconBrandX,
-  IconExchange,
-  IconHome,
-  IconNewSection,
-  IconTerminal2,
-  IconUpload,
-  IconMessage,
-  IconSettings,
-  IconLogout,
-  IconMoon,
-  IconSun,
-} from "@tabler/icons-react";
+"use client"
+
+import { motion } from "framer-motion"
+import { IconDashboard, IconUpload, IconMessage, IconSettings } from "@tabler/icons-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 export default function FloatingDockDemo() {
-  const links = [
+  const pathname = usePathname()
+
+  const items = [
     {
-      title: "Dashboard",
-      icon: (
-        <IconHome className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
+      name: "Dashboard",
+      icon: IconDashboard,
       href: "/dashboard",
     },
     {
-      title: "Upload Document",
-      icon: (
-        <IconUpload className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
+      name: "Upload",
+      icon: IconUpload,
       href: "/upload",
     },
     {
-      title: "Chat",
-      icon: (
-        <IconMessage className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
+      name: "Chat",
+      icon: IconMessage,
       href: "/chat",
     },
     {
-      title: "Settings",
-      icon: (
-        <IconSettings className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
+      name: "Settings",
+      icon: IconSettings,
       href: "/settings",
     },
-    {
-      title: "Dark Mode",
-      icon: (
-        <IconMoon className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: "#",
-    },
-    {
-      title: "Logout",
-      icon: (
-        <IconLogout className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: "/logout",
-    },
-  ];
+  ]
+
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2">
-      <FloatingDock
-        mobileClassName="translate-y-20"
-        items={links}
-      />
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="flex items-center gap-2 rounded-full bg-background/80 p-2 shadow-lg backdrop-blur-lg"
+      >
+        {items.map((item) => {
+          const isActive = pathname === item.href
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`relative rounded-full p-3 transition-colors ${
+                isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              <item.icon className="h-6 w-6" />
+              {isActive && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute inset-0 rounded-full bg-primary"
+                  style={{ zIndex: -1 }}
+                />
+              )}
+            </Link>
+          )
+        })}
+      </motion.div>
     </div>
-  );
+  )
 } 
