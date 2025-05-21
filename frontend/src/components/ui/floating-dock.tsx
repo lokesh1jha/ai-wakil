@@ -8,7 +8,7 @@ import {
   useMotionValue,
   useSpring,
   useTransform,
-} from "framer-motion";
+} from "motion/react";
 
 import { useRef, useState } from "react";
 
@@ -94,7 +94,7 @@ const FloatingDockDesktop = ({
   let mouseX = useMotionValue(Infinity);
   return (
     <motion.div
-      onMouseMove={(e: React.MouseEvent<HTMLDivElement>) => mouseX.set(e.pageX)}
+      onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
       className={cn(
         "mx-auto hidden h-16 items-end gap-4 rounded-2xl bg-gray-50 px-4 pb-3 md:flex dark:bg-neutral-900",
@@ -131,11 +131,7 @@ function IconContainer({
   let heightTransform = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
 
   let widthTransformIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20]);
-  let heightTransformIcon = useTransform(
-    distance,
-    [-150, 0, 150],
-    [20, 40, 20],
-  );
+  let heightTransformIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20]);
 
   let width = useSpring(widthTransform, {
     mass: 0.1,

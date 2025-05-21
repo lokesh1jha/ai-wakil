@@ -1,21 +1,19 @@
-import React from "react";
-import { FloatingDock } from "@/components/ui/floating-dock";
+"use client"
+
+import React from "react"
+import { FloatingDock } from "@/components/ui/floating-dock"
 import {
-  IconBrandGithub,
-  IconBrandX,
-  IconExchange,
   IconHome,
-  IconNewSection,
-  IconTerminal2,
   IconUpload,
   IconMessage,
   IconSettings,
-  IconLogout,
-  IconMoon,
-  IconSun,
-} from "@tabler/icons-react";
+} from "@tabler/icons-react"
+import { usePathname } from "next/navigation"
+import Link from "next/link"
 
 export default function FloatingDockDemo() {
+  const pathname = usePathname()
+
   const links = [
     {
       title: "Dashboard",
@@ -25,7 +23,7 @@ export default function FloatingDockDemo() {
       href: "/dashboard",
     },
     {
-      title: "Upload Document",
+      title: "Upload",
       icon: (
         <IconUpload className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
@@ -45,27 +43,23 @@ export default function FloatingDockDemo() {
       ),
       href: "/settings",
     },
-    {
-      title: "Dark Mode",
-      icon: (
-        <IconMoon className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: "#",
-    },
-    {
-      title: "Logout",
-      icon: (
-        <IconLogout className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: "/logout",
-    },
-  ];
+  ]
+
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
       <FloatingDock
-        mobileClassName="translate-y-20"
-        items={links}
+        items={links.map(link => ({
+          ...link,
+          href: link.href,
+          icon: (
+            <Link href={link.href}>
+              <div className={`h-full w-full ${pathname === link.href ? 'text-primary' : ''}`}>
+                {link.icon}
+              </div>
+            </Link>
+          )
+        }))}
       />
     </div>
-  );
+  )
 } 
