@@ -1,12 +1,13 @@
 from typing import List, Dict, Any
 import pinecone
-from openai import OpenAI
+import google.generativeai as genai
 from ..core.config import settings
 import uuid
 
 class EmbeddingsService:
     def __init__(self):
-        self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        genai.configure(api_key=settings.GOOGLE_API_KEY)
+        self.model = genai.GenerativeModel('embedding-001')
         self._init_pinecone()
     
     def _init_pinecone(self):
@@ -20,20 +21,20 @@ class EmbeddingsService:
         if settings.PINECONE_INDEX_NAME not in pinecone.list_indexes():
             pinecone.create_index(
                 name=settings.PINECONE_INDEX_NAME,
-                dimension=1536,  # OpenAI ada-002 embedding dimension
+                dimension=768,  # Gemini embedding dimension
                 metric="cosine"
             )
         
         self.index = pinecone.Index(settings.PINECONE_INDEX_NAME)
     
     async def generate_embeddings(self, texts: List[str]) -> List[List[float]]:
-        """Generate embeddings for a list of texts using OpenAI's API."""
+        """Generate embeddings for a list of texts using Gemini API."""
         try:
-            response = await self.client.embeddings.create(
-                model=settings.EMBEDDING_MODEL,
-                input=texts
-            )
-            return [item.embedding for item in response.data]
+            embeddings = []
+            for text in texts:
+                result = self.model.embed_content(text)
+                embeddings.append(result.embedding)
+            return embeddings
         except Exception as e:
             raise Exception(f"Failed to generate embeddings: {str(e)}")
     

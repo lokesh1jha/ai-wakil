@@ -11,15 +11,15 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "AI Legal Assistant"
     
     # Security
-    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "your-secret-key")
-    JWT_ALGORITHM: str = "HS256"
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key")
+    ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     # CORS
-    CORS_ORIGINS: List[str] = ["*"]
+    CORS_ORIGINS: List[str] = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
     
-    # OpenAI
-    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+    # Google Gemini API
+    GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
     
     # Pinecone
     PINECONE_API_KEY: str = os.getenv("PINECONE_API_KEY", "")

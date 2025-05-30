@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 from ..services.embeddings import EmbeddingsService
-from ..services.llm import LLMService
+from ..services.gemini_service import GeminiService
 
 router = APIRouter()
 embeddings_service = EmbeddingsService()
-llm_service = LLMService()
+gemini_service = GeminiService()
 
 @router.get("/")
 async def health_check():
@@ -17,18 +17,18 @@ async def health_check():
         except Exception as e:
             pinecone_status = f"unhealthy: {str(e)}"
         
-        # Check OpenAI connection
-        openai_status = "healthy"
+        # Check Gemini connection
+        gemini_status = "healthy"
         try:
-            await llm_service.client.models.list()
+            await gemini_service.generate_response("Test connection")
         except Exception as e:
-            openai_status = f"unhealthy: {str(e)}"
+            gemini_status = f"unhealthy: {str(e)}"
         
         return {
             "status": "healthy",
             "components": {
                 "pinecone": pinecone_status,
-                "openai": openai_status
+                "gemini": gemini_status
             }
         }
     except Exception as e:
