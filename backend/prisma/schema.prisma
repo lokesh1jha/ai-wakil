@@ -9,13 +9,17 @@ generator client {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  name      String
-  password  String
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  projects  Project[]
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  credits       Int       @default(5) // Free credits for new users
+  transactions  Transaction[]
+  documents     Document[]
+  projects      Project[]
+  auditLogs     AuditLog[]
 
   @@map("users")
 }
@@ -30,4 +34,42 @@ model Project {
   user        User     @relation(fields: [userId], references: [id])
 
   @@map("projects")
+}
+
+model Transaction {
+  id            String    @id @default(cuid())
+  userId        String
+  amount        Float
+  credits       Int
+  status        String    // PENDING, COMPLETED, FAILED
+  paymentId     String?   // Payment gateway reference
+  createdAt     DateTime  @default(now())
+  user          User      @relation(fields: [userId], references: [id])
+}
+
+model Document {
+  id            String    @id @default(cuid())
+  userId        String
+  filename      String
+  content       String    @db.Text
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  user          User      @relation(fields: [userId], references: [id])
+  creditCost    Int       @default(1) // Credits cost per document
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String
+  actionType  String   // CREATE, READ, UPDATE, DELETE, LOGIN, LOGOUT
+  resourceType String
+  resourceId  String
+  details     Json?    // Using Prisma's Json type for flexible details
+  timestamp   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([actionType])
+  @@index([resourceType, resourceId])
+  @@map("audit_logs")
 } 

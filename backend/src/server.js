@@ -5,7 +5,6 @@ const jwt = require('@fastify/jwt');
 const rateLimit = require('fastify-rate-limit');
 const swagger = require('@fastify/swagger');
 const swaggerUi = require('@fastify/swagger-ui');
-const mongoose = require('mongoose');
 
 // Import routes
 const userRoutes = require('./routes/users');
@@ -48,11 +47,6 @@ fastify.register(swaggerUi, {
 // Register routes
 fastify.register(userRoutes, { prefix: '/api/users' });
 fastify.register(projectRoutes, { prefix: '/api/projects' });
-
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch(err => console.error('MongoDB connection error:', err));
 
 // Start server
 const start = async () => {
